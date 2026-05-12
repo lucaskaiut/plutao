@@ -1,0 +1,18 @@
+---
+alwaysApply: true
+---
+
+# Regras gerais do projeto
+Este documento tem como objetivo orientar o agente a executar regras específicas para o projeto
+
+### Execução de comandos
+Todo e qualquer comando na plataforma **deve** ser executado no contexto do docker. Por exemplo, para atualizar o banco de dados: 
+Errado:
+`php artisan migrate`
+
+Correto: 
+`docker compose exec app php artisan migrate`
+
+Essa regra vale para **web** e **api**.
+
+O agente **não** deve executar comandos de aplicação diretamente no contexto do host. 
