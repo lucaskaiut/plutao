@@ -1,0 +1,8 @@
+{
+  "login": {
+    "emailPasswordRequired": "Informe e-mail e senha."
+  },
+  "register": {
+    "allFieldsRequired": "Preencha todos os campos."
+  }
+}

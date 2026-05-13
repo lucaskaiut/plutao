@@ -1,0 +1,7 @@
+{
+  "badge": "Signed-in area",
+  "greeting": "Hello, {name}",
+  "sessionTitle": "Active session",
+  "sessionDescription": "This page is only available after validation in the private layout (GET /me via HttpOnly cookie). The token is not exposed to JavaScript in the browser.",
+  "logout": "Log out"
+}

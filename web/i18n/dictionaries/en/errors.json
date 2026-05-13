@@ -1,0 +1,11 @@
+{
+  "invalidJson": "Invalid JSON.",
+  "invalidCredentials": "Invalid credentials.",
+  "genericOperation": "Could not complete the operation.",
+  "fillAllFields": "Fill in all fields.",
+  "fillEmailPassword": "Enter email and password.",
+  "loginBffFail": "Sign-in failed.",
+  "registerBffFail": "Registration failed.",
+  "useAuthMissing": "useAuth must be used within AuthProvider.",
+  "useTranslateMissing": "useTranslate must be used within I18nProvider."
+}

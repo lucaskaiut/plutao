@@ -1,0 +1,8 @@
+{
+  "login": {
+    "emailPasswordRequired": "Enter email and password."
+  },
+  "register": {
+    "allFieldsRequired": "Fill in all fields."
+  }
+}

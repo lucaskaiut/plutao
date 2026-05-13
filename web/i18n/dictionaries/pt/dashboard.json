@@ -1,0 +1,7 @@
+{
+  "badge": "Área autenticada",
+  "greeting": "Olá, {name}",
+  "sessionTitle": "Sessão ativa",
+  "sessionDescription": "Esta página só é acessível após validação no layout privado (GET /me na API via cookie HttpOnly). O token não fica disponível para JavaScript no navegador.",
+  "logout": "Sair"
+}
