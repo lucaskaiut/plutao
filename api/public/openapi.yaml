@@ -5,104 +5,33 @@ info:
   version: 1.0.0
 tags: []
 paths:
-  /api/login:
-    post:
-      summary: login
+  /api/me:
+    get:
+      summary: me
       deprecated: false
-      description: ''
+      description: Retorna o usuário autenticado via token Sanctum (Authorization Bearer).
       tags: []
       parameters:
         - name: Accept
           in: header
           description: ''
+          required: false
           example: application/json
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                channel:
-                  $ref: '#/components/schemas/channel'
-                payload:
-                  type: object
-                  properties:
-                    email:
-                      type: string
-                    password:
-                      type: string
-                  required:
-                    - email
-                    - password
-              required:
-                - channel
-                - payload
-            example:
-              channel: internal
-              payload:
-                email: admin@example.com
-                password: secret
-        required: true
       responses:
         '200':
           description: ''
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/loginRegisterSuccess'
+                $ref: '#/components/schemas/meResponse'
           headers: {}
         '401':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  errors:
-                    type: object
-                    properties:
-                      credentials:
-                        type: array
-                        items:
-                          type: string
-                    required:
-                      - credentials
-                required:
-                  - message
-                  - errors
-          headers: {}
-        '422':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  errors:
-                    type: object
-                    properties:
-                      channel:
-                        type: array
-                        items:
-                          type: string
-                      payload:
-                        type: array
-                        items:
-                          type: string
-                    required:
-                      - channel
-                      - payload
-                required:
-                  - message
-                  - errors
-          headers: {}
-      security: []
+          $ref: '#/components/responses/Unauthenticated'
+          description: Requisição sem credenciais válidas (token ausente ou inválido).
+      security:
+        - bearerAuth: []
   /api/register:
     post:
       summary: register
@@ -113,6 +42,7 @@ paths:
         - name: Accept
           in: header
           description: ''
+          required: false
           example: application/json
           schema:
             type: string
@@ -121,11 +51,18 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - channel
+                - payload
               properties:
                 channel:
                   $ref: '#/components/schemas/channel'
                 payload:
                   type: object
+                  required:
+                    - name
+                    - email
+                    - password
                   properties:
                     name:
                       type: string
@@ -133,13 +70,6 @@ paths:
                       type: string
                     password:
                       type: string
-                  required:
-                    - name
-                    - email
-                    - password
-              required:
-                - channel
-                - payload
             example:
               channel: internal
               payload:
@@ -168,11 +98,17 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - message
+                  - errors
                 properties:
                   message:
                     type: string
                   errors:
                     type: object
+                    required:
+                      - channel
+                      - payload
                     properties:
                       channel:
                         type: array
@@ -182,38 +118,107 @@ paths:
                         type: array
                         items:
                           type: string
-                    required:
-                      - channel
-                      - payload
-                required:
-                  - message
-                  - errors
+          headers: {}
       security: []
-  /api/me:
-    get:
-      summary: me
+  /api/login:
+    post:
+      summary: login
       deprecated: false
-      description: Retorna o usuário autenticado via token Sanctum (Authorization Bearer).
+      description: ''
       tags: []
       parameters:
         - name: Accept
           in: header
           description: ''
+          required: false
           example: application/json
           schema:
             type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - channel
+                - payload
+              properties:
+                channel:
+                  $ref: '#/components/schemas/channel'
+                payload:
+                  type: object
+                  required:
+                    - email
+                    - password
+                  properties:
+                    email:
+                      type: string
+                    password:
+                      type: string
+            example:
+              channel: internal
+              payload:
+                email: admin@example.com
+                password: secret
+        required: true
       responses:
         '200':
           description: ''
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/meResponse'
+                $ref: '#/components/schemas/loginRegisterSuccess'
           headers: {}
         '401':
-          $ref: '#/components/responses/Unauthenticated'
-      security:
-        - bearerAuth: []
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                  - errors
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    required:
+                      - credentials
+                    properties:
+                      credentials:
+                        type: array
+                        items:
+                          type: string
+          headers: {}
+        '422':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                  - errors
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    required:
+                      - channel
+                      - payload
+                    properties:
+                      channel:
+                        type: array
+                        items:
+                          type: string
+                      payload:
+                        type: array
+                        items:
+                          type: string
+          headers: {}
+      security: []
 webhooks: {}
 components:
   schemas:
@@ -221,29 +226,6 @@ components:
       type: string
       enum:
         - internal
-    user:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email:
-          type: string
-      required:
-        - id
-        - name
-        - email
-    authTokenAndUser:
-      type: object
-      properties:
-        token:
-          type: string
-        user:
-          $ref: '#/components/schemas/user'
-      required:
-        - token
-        - user
     loginRegisterSuccess:
       type: object
       properties:
@@ -251,8 +233,33 @@ components:
           $ref: '#/components/schemas/authTokenAndUser'
       required:
         - data
+    authTokenAndUser:
+      type: object
+      required:
+        - token
+        - user
+      properties:
+        user:
+          $ref: '#/components/schemas/user'
+        token:
+          type: string
+    user:
+      type: object
+      required:
+        - id
+        - name
+        - email
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
     meResponse:
       type: object
+      required:
+        - data
       properties:
         data:
           type: object
@@ -261,8 +268,6 @@ components:
               $ref: '#/components/schemas/user'
           required:
             - user
-      required:
-        - data
   responses:
     Unauthenticated:
       description: Requisição sem credenciais válidas (token ausente ou inválido).
@@ -270,11 +275,11 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - message
             properties:
               message:
                 type: string
-            required:
-              - message
   securitySchemes:
     bearerAuth:
       type: http
