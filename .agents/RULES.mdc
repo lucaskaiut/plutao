@@ -2,6 +2,8 @@
 alwaysApply: true
 ---
 
+> **Cursor IDE:** regras com `alwaysApply` só entram no contexto do agente quando estão em `.cursor/rules/*.mdc`. O equivalente carregado automaticamente está em `.cursor/rules/docker-commands.mdc`.
+
 # Regras gerais do projeto
 Este documento tem como objetivo orientar o agente a executar regras específicas para o projeto
 

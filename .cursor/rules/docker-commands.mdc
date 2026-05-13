@@ -1,0 +1,20 @@
+---
+description: Comandos de app sempre via Docker (api e web)
+alwaysApply: true
+---
+
+# Execução de comandos
+
+Todo e qualquer comando na plataforma **deve** ser executado no contexto do Docker. Por exemplo, para atualizar o banco de dados:
+
+Errado:
+
+`php artisan migrate`
+
+Correto:
+
+`docker compose exec app php artisan migrate`
+
+Essa regra vale para **web** e **api**.
+
+O agente **não** deve executar comandos de aplicação diretamente no contexto do host.

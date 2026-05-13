@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 tags: []
 paths:
-  /login:
+  /api/login:
     post:
       summary: login
       deprecated: false
@@ -51,31 +51,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      token:
-                        type: string
-                      user:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                          name:
-                            type: string
-                          email:
-                            type: string
-                        required:
-                          - id
-                          - name
-                          - email
-                    required:
-                      - token
-                      - user
-                required:
-                  - data
+                $ref: '#/components/schemas/loginRegisterSuccess'
           headers: {}
         '401':
           description: ''
@@ -127,7 +103,7 @@ paths:
                   - errors
           headers: {}
       security: []
-  /register:
+  /api/register:
     post:
       summary: register
       deprecated: false
@@ -177,37 +153,14 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      token:
-                        type: string
-                      user:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                          name:
-                            type: string
-                          email:
-                            type: string
-                        required:
-                          - id
-                          - name
-                          - email
-                    required:
-                      - token
-                      - user
-                required:
-                  - data
+                $ref: '#/components/schemas/loginRegisterSuccess'
               example:
-                channel: internal
-                payload:
-                  name: Lucas Kaiut
-                  email: lucas.kaiut@gmail.com
-                  password: abc@123
+                data:
+                  token: 1|examplePlainTextToken
+                  user:
+                    id: 1
+                    name: Lucas Kaiut
+                    email: lucas.kaiut@gmail.com
           headers: {}
         '422':
           description: ''
@@ -236,6 +189,31 @@ paths:
                   - message
                   - errors
       security: []
+  /api/me:
+    get:
+      summary: me
+      deprecated: false
+      description: Retorna o usuário autenticado via token Sanctum (Authorization Bearer).
+      tags: []
+      parameters:
+        - name: Accept
+          in: header
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meResponse'
+          headers: {}
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+      security:
+        - bearerAuth: []
 webhooks: {}
 components:
   schemas:
@@ -243,7 +221,64 @@ components:
       type: string
       enum:
         - internal
-  responses: {}
-  securitySchemes: {}
+    user:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+      required:
+        - id
+        - name
+        - email
+    authTokenAndUser:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/user'
+      required:
+        - token
+        - user
+    loginRegisterSuccess:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/authTokenAndUser'
+      required:
+        - data
+    meResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/user'
+          required:
+            - user
+      required:
+        - data
+  responses:
+    Unauthenticated:
+      description: Requisição sem credenciais válidas (token ausente ou inválido).
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Token pessoal Sanctum retornado em login ou registro.
 servers: []
 security: []
