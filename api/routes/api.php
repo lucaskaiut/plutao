@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HealthController;
+use App\Modules\Categories\Http\Controllers\CategoryController;
 use App\Modules\Users\Http\Controllers\LoginController;
 use App\Modules\Users\Http\Controllers\MeController;
 use App\Modules\Users\Http\Controllers\RegisterController;
@@ -13,6 +14,8 @@ Route::post('/login', LoginController::class);
 Route::post('/register', RegisterController::class);
 
 Route::get('/me', MeController::class)->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->apiResource('categories', CategoryController::class);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

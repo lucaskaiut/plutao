@@ -3,14 +3,19 @@ info:
   title: Módulo predefinido
   description: ''
   version: 1.0.0
-tags: []
+tags:
+  - name: User
+    description: Registo, sessão e perfil do utilizador autenticado.
+  - name: Categories
+    description: CRUD de categorias (autenticação Sanctum obrigatória).
 paths:
   /api/me:
     get:
       summary: me
       deprecated: false
       description: Retorna o usuário autenticado via token Sanctum (Authorization Bearer).
-      tags: []
+      tags:
+        - User
       parameters:
         - name: Accept
           in: header
@@ -29,7 +34,6 @@ paths:
           headers: {}
         '401':
           $ref: '#/components/responses/Unauthenticated'
-          description: Requisição sem credenciais válidas (token ausente ou inválido).
       security:
         - bearerAuth: []
   /api/register:
@@ -37,7 +41,8 @@ paths:
       summary: register
       deprecated: false
       description: ''
-      tags: []
+      tags:
+        - User
       parameters:
         - name: Accept
           in: header
@@ -125,7 +130,8 @@ paths:
       summary: login
       deprecated: false
       description: ''
-      tags: []
+      tags:
+        - User
       parameters:
         - name: Accept
           in: header
@@ -219,6 +225,195 @@ paths:
                           type: string
           headers: {}
       security: []
+  /api/categories:
+    get:
+      summary: List categories
+      description: Returns all categories ordered by id. Requires Sanctum bearer token.
+      tags:
+        - Categories
+      parameters:
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/categoriesListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+      security:
+        - bearerAuth: []
+    post:
+      summary: Create category
+      description: Creates a category. When `active` is omitted, it defaults to true.
+      tags:
+        - Categories
+      parameters:
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/categoryCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/categorySingleResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+      security:
+        - bearerAuth: []
+  /api/categories/{id}:
+    get:
+      summary: Get category
+      description: Returns a single category by id.
+      tags:
+        - Categories
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Category id
+          schema:
+            type: integer
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/categorySingleResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []
+    put:
+      summary: Replace category
+      description: Updates a category (full replacement style body; `name` and `active` may be sent together).
+      tags:
+        - Categories
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/categoryUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/categorySingleResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+      security:
+        - bearerAuth: []
+    patch:
+      summary: Update category
+      description: Same validation as PUT; partial updates are accepted when fields are omitted per Laravel `sometimes` rules.
+      tags:
+        - Categories
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/categoryUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/categorySingleResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+      security:
+        - bearerAuth: []
+    delete:
+      summary: Delete category
+      description: Deletes a category. Returns 204 No Content on success.
+      tags:
+        - Categories
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []
 webhooks: {}
 components:
   schemas:
@@ -268,6 +463,61 @@ components:
               $ref: '#/components/schemas/user'
           required:
             - user
+    category:
+      type: object
+      required:
+        - id
+        - name
+        - active
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    categoriesListResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/category'
+    categorySingleResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: '#/components/schemas/category'
+    categoryCreateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        active:
+          type: boolean
+    categoryUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        active:
+          type: boolean
   responses:
     Unauthenticated:
       description: Requisição sem credenciais válidas (token ausente ou inválido).
@@ -277,6 +527,33 @@ components:
             type: object
             required:
               - message
+            properties:
+              message:
+                type: string
+    ValidationError:
+      description: Erro de validação (422 Unprocessable Entity).
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+              - errors
+            properties:
+              message:
+                type: string
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+    NotFound:
+      description: Recurso não encontrado (404).
+      content:
+        application/json:
+          schema:
+            type: object
             properties:
               message:
                 type: string
