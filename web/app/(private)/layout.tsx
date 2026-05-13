@@ -1,4 +1,5 @@
 import { AuthedAppHeader } from "@/components/layout/authed-app-header";
+import { PrivateNavChrome } from "@/components/layout/private-nav-chrome";
 import { PrivateAuthSync } from "@/components/auth/private-auth-sync";
 import { assertAuthenticatedLayout } from "@/lib/auth/guard";
 
@@ -9,10 +10,11 @@ export default async function PrivateGroupLayout({
 }) {
   await assertAuthenticatedLayout();
   return (
-    <div className="flex flex-1 flex-col">
-      <AuthedAppHeader />
+    <div className="flex min-h-0 flex-1 flex-col">
       <PrivateAuthSync />
-      {children}
+      <PrivateNavChrome header={<AuthedAppHeader />}>
+        {children}
+      </PrivateNavChrome>
     </div>
   );
 }

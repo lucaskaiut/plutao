@@ -4,6 +4,7 @@
   Design system (tokens)
   — Cores semânticas; evite hex nas classes (use bg-primary, text-muted, etc.).
   — Primária da marca: roxo #9333ea (somente aqui como variável CSS).
+  — Separação visual: preferir fundo + sombra em vez de contornos/bordas.
 */
 :root {
   --keyboard-inset: 0px;
@@ -12,7 +13,6 @@
   --muted: #64748b;
   --surface: #f5f3ff;
   --surface-elevated: #ffffff;
-  --border: #e2e8f0;
   --ring: #9333ea;
   --primary: #9333ea;
   /* Texto sobre fundo primary (sempre branco; use text-primary-foreground no UI). */
@@ -28,7 +28,6 @@
     --muted: #94a3b8;
     --surface: #1e1b4b;
     --surface-elevated: #1e293b;
-    --border: #334155;
     --ring: #c084fc;
     --primary: #a855f7;
     /* Mesmo contraste: texto sobre primary continua branco. */
@@ -44,7 +43,6 @@
   --color-muted: var(--muted);
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
-  --color-border: var(--border);
   --color-ring: var(--ring);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
@@ -66,10 +64,10 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-md transition hover:opacity-95 hover:shadow-lg focus-visible:shadow-lg focus-visible:ring-2 focus-visible:ring-ring/45 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .input-field {
-    @apply w-full rounded-lg border border-border bg-surface-elevated px-4 py-3 text-sm text-foreground shadow-sm outline-none transition placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-ring/25;
+    @apply w-full rounded-lg bg-surface-elevated px-4 py-3 text-sm text-foreground shadow-md outline-none transition placeholder:text-muted focus:shadow-lg focus:ring-2 focus:ring-ring/35;
   }
 }

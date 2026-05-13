@@ -1,5 +1,3 @@
 {
-  "languageLabel": "Idioma",
-  "optionPt": "Português",
-  "optionEn": "English"
+  "languageSelectAria": "Selecionar idioma"
 }

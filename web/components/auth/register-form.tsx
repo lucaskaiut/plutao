@@ -26,7 +26,7 @@ export function RegisterForm() {
       {state.status === "error" ? (
         <div
           role="alert"
-          className="rounded-lg border border-border bg-danger-muted px-4 py-3 text-sm text-danger"
+          className="rounded-lg bg-danger-muted px-4 py-3 text-sm text-danger shadow-md dark:shadow-[0_6px_24px_-6px_rgba(0,0,0,0.45)]"
         >
           {state.message}
         </div>
