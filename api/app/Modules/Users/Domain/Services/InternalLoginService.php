@@ -22,4 +22,16 @@ final class InternalLoginService implements LoginChannelContract
 
         return $user;
     }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function register(array $data): mixed
+    {
+        return User::query()->create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+        ]);
+    }
 }

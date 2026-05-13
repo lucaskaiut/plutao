@@ -53,4 +53,43 @@ class AuthServiceTest extends TestCase
         $this->assertSame($user, $result->user);
         $this->assertSame('plain-api-token', $result->token);
     }
+
+    public function test_register_delegates_payload_to_resolved_handler_without_transforming_keys(): void
+    {
+        $user = Mockery::mock(User::class);
+        $accessToken = Mockery::mock(PersonalAccessToken::class);
+        $newToken = new NewAccessToken($accessToken, 'plain-register-token');
+
+        $user->shouldReceive('createToken')
+            ->once()
+            ->with('register')
+            ->andReturn($newToken);
+
+        $handler = Mockery::mock(LoginChannelContract::class);
+        $handler->shouldReceive('register')
+            ->once()
+            ->with([
+                'name' => 'Jane',
+                'email' => 'jane@example.com',
+                'password' => 'plain',
+            ])
+            ->andReturn($user);
+
+        $registry = Mockery::mock(LoginChannelRegistry::class);
+        $registry->shouldReceive('resolve')
+            ->once()
+            ->with('internal')
+            ->andReturn($handler);
+
+        $service = new AuthService($registry);
+        $result = $service->register('internal', [
+            'name' => 'Jane',
+            'email' => 'jane@example.com',
+            'password' => 'plain',
+        ]);
+
+        $this->assertInstanceOf(LoginSuccessResult::class, $result);
+        $this->assertSame($user, $result->user);
+        $this->assertSame('plain-register-token', $result->token);
+    }
 }

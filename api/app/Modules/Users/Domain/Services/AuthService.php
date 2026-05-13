@@ -27,4 +27,21 @@ final class AuthService
 
         return new LoginSuccessResult($authenticated, $token);
     }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    public function register(string $channel, array $payload): mixed
+    {
+        $handler = $this->registry->resolve($channel);
+        $registered = $handler->register($payload);
+
+        if (! $registered instanceof User) {
+            throw new \LogicException('Register channel must return a '.User::class.' instance.');
+        }
+
+        $token = $registered->createToken('register')->plainTextToken;
+
+        return new LoginSuccessResult($registered, $token);
+    }
 }

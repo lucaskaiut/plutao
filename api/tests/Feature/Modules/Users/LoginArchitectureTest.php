@@ -5,6 +5,7 @@ namespace Tests\Feature\Modules\Users;
 use App\Modules\Users\Domain\Contracts\LoginChannelContract;
 use App\Modules\Users\Domain\Services\InternalLoginService;
 use App\Modules\Users\Http\Controllers\LoginController;
+use App\Modules\Users\Http\Controllers\RegisterController;
 use Tests\TestCase;
 
 class LoginArchitectureTest extends TestCase
@@ -23,5 +24,15 @@ class LoginArchitectureTest extends TestCase
     {
         $service = new InternalLoginService;
         $this->assertInstanceOf(LoginChannelContract::class, $service);
+    }
+
+    public function test_register_controller_does_not_contain_user_persistence_rules(): void
+    {
+        $path = (new \ReflectionClass(RegisterController::class))->getFileName();
+        $this->assertNotFalse($path);
+        $contents = file_get_contents($path);
+        $this->assertIsString($contents);
+        $this->assertStringNotContainsString('User::create', $contents);
+        $this->assertStringNotContainsString('User::query()->create', $contents);
     }
 }
