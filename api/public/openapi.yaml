@@ -1,0 +1,249 @@
+openapi: 3.1.0
+info:
+  title: Módulo predefinido
+  description: ''
+  version: 1.0.0
+tags: []
+paths:
+  /login:
+    post:
+      summary: login
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Accept
+          in: header
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                channel:
+                  $ref: '#/components/schemas/channel'
+                payload:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                    password:
+                      type: string
+                  required:
+                    - email
+                    - password
+              required:
+                - channel
+                - payload
+            example:
+              channel: internal
+              payload:
+                email: admin@example.com
+                password: secret
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          email:
+                            type: string
+                        required:
+                          - id
+                          - name
+                          - email
+                    required:
+                      - token
+                      - user
+                required:
+                  - data
+          headers: {}
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      credentials:
+                        type: array
+                        items:
+                          type: string
+                    required:
+                      - credentials
+                required:
+                  - message
+                  - errors
+          headers: {}
+        '422':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      channel:
+                        type: array
+                        items:
+                          type: string
+                      payload:
+                        type: array
+                        items:
+                          type: string
+                    required:
+                      - channel
+                      - payload
+                required:
+                  - message
+                  - errors
+          headers: {}
+      security: []
+  /register:
+    post:
+      summary: register
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Accept
+          in: header
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                channel:
+                  $ref: '#/components/schemas/channel'
+                payload:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    email:
+                      type: string
+                    password:
+                      type: string
+                  required:
+                    - name
+                    - email
+                    - password
+              required:
+                - channel
+                - payload
+            example:
+              channel: internal
+              payload:
+                name: Lucas Kaiut
+                email: lucas.kaiut@gmail.com
+                password: abc@123
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          email:
+                            type: string
+                        required:
+                          - id
+                          - name
+                          - email
+                    required:
+                      - token
+                      - user
+                required:
+                  - data
+              example:
+                channel: internal
+                payload:
+                  name: Lucas Kaiut
+                  email: lucas.kaiut@gmail.com
+                  password: abc@123
+          headers: {}
+        '422':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      channel:
+                        type: array
+                        items:
+                          type: string
+                      payload:
+                        type: array
+                        items:
+                          type: string
+                    required:
+                      - channel
+                      - payload
+                required:
+                  - message
+                  - errors
+      security: []
+webhooks: {}
+components:
+  schemas:
+    channel:
+      type: string
+      enum:
+        - internal
+  responses: {}
+  securitySchemes: {}
+servers: []
+security: []
